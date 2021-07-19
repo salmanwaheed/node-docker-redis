@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    restart: unless-stopped
+    network_mode: bridge
+    expose:
+      - 6379
+
+  api:
+    build: .
+    container_name: api
+    restart: unless-stopped
+    network_mode: bridge
+    command: /bin/sh -c 'nodemon -e js,html index.js'
+    ports:
+      - 8080:9000
+    volumes:
+      - .:/src
+      - /src/node_modules
+    # environment:
+    #   NODE_ENV: dev
+    #   REDIS_URL: redis://cache
+    links:
+      - redis
